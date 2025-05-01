@@ -22,7 +22,7 @@ import com.example.GisLocationApp.Modal.GisPlaces;
 import com.example.GisLocationApp.Repository.GisPlaceRepository;
 import com.example.GisLocationApp.Service.GisPlaceService;
 
-@CrossOrigin(origins = "*") 
+@CrossOrigin(origins = "http://localhost:5173") 
 @RestController
 @RequestMapping("/api/places")
 public class GisPlaceController {
