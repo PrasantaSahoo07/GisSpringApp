@@ -1,27 +1,28 @@
+# Stage 1: Build
 FROM maven:3.8.5-openjdk-17 AS build
 
-# Set working directory inside container
 WORKDIR /app
 
-# Copy pom.xml separately to leverage Docker layer caching
+# Copy only pom.xml first to cache dependencies
 COPY pom.xml .
 
-# Download dependencies (optional but efficient)
+# Pre-download dependencies
 RUN mvn dependency:go-offline -B
 
-# Copy the rest of the source code
+# Copy the rest of the project
 COPY src ./src
 
-# Package the application
+# Build the application
 RUN mvn clean package -DskipTests
 
-# Second stage: runtime
+# Stage 2: Run
 FROM openjdk:17.0.1-jdk-slim
 
-# Copy built jar from the previous stage
+WORKDIR /app
+
+# Copy the built jar
 COPY --from=build /app/target/GisLocationApp-0.0.1-SNAPSHOT.jar GisLocationApp.jar
 
 EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "GisLocationApp.jar"]
-
